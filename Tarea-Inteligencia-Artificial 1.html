@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bouncing Ball</title>
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #282c34;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+
+        canvas {
+            border: 1px solid white;
+            background-color: #444;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #61dafb;
+            border: none;
+            border-radius: 5px;
+            color: #282c34;
+        }
+
+        button:hover {
+            background-color: #21a1f1;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="gameCanvas" width="800" height="600"></canvas>
+    <button id="toggleButton">Pausar</button>
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        let ballX = canvas.width / 2;
+        let ballY = canvas.height / 2;
+        const ballRadius = 20;
+        let ballSpeedX = 2;
+        let ballSpeedY = 2;
+
+        let isPaused = false; // Variable para controlar el estado del juego
+
+        function drawBall() {
+            ctx.beginPath();
+            ctx.arc(ballX, ballY, ballRadius, 0, Math.PI * 2);
+            ctx.fillStyle = 'white';
+            ctx.fill();
+            ctx.closePath();
+        }
+
+        function updateBallPosition() {
+            ballX += ballSpeedX;
+            ballY += ballSpeedY;
+
+            if (ballX + ballRadius > canvas.width || ballX - ballRadius < 0) {
+                ballSpeedX = -ballSpeedX;
+            }
+            if (ballY + ballRadius > canvas.height || ballY - ballRadius < 0) {
+                ballSpeedY = -ballSpeedY;
+            }
+        }
+
+        function gameLoop() {
+            if (!isPaused) {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                drawBall();
+                updateBallPosition();
+            }
+            requestAnimationFrame(gameLoop);
+        }
+
+        // Función para alternar pausa y reanudación del juego
+        function toggleGame() {
+            isPaused = !isPaused;
+            document.getElementById('toggleButton').innerText = isPaused ? 'Reanudar' : 'Pausar';
+        }
+
+        // Asignar el evento de clic al botón
+        document.getElementById('toggleButton').addEventListener('click', toggleGame);
+
+        gameLoop();
+    </script>
+</body>
+</html>
